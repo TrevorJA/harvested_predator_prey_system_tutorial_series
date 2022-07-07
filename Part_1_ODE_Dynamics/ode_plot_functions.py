@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 from scipy import integrate
 
 
-from lotka_volterra_functions import type_II_equilibrium
+from lotka_volterra_functions import type_II_equilibrium, type_II_lotka_volterra
 
 ################################################################################
 def plot_interactive_trajectories(a, b, c, d, h, K, m):
@@ -20,6 +20,7 @@ def plot_interactive_trajectories(a, b, c, d, h, K, m):
     ODE.
 
     """
+
     # ODE
     ode_function = type_II_lotka_volterra
 
@@ -113,6 +114,7 @@ def plot_time_trajectories(a, b, c, d, h, K, m):
     --------
     None.
     """
+
     # ODE
     ode_function = type_II_lotka_volterra
 
