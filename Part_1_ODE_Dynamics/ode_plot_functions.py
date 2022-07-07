@@ -12,7 +12,7 @@ from scipy import integrate
 
 
 from lotka_volterra_functions import type_II_equilibrium
-
+from lotka_volterra_functions import type_II_lotka_volterra
 ################################################################################
 def plot_interactive_trajectories(a, b, c, d, h, K, m):
     """

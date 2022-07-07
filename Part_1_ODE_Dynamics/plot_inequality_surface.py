@@ -43,7 +43,7 @@ def plot_inequality_surface(a, b, c, d, h, K, m):
     A = a_boundary.clip(0,2)
 
     fig = plt.figure(figsize=(12,9))
-    ax3D = fig.gca(projection='3d')
+    ax3D = fig.add_subplot(projection='3d')
     ax3D.plot_surface(B, M, A, color = 'b', linewidth = 0, alpha = 0.25)
 
     # Choose the point color according to stability condition
