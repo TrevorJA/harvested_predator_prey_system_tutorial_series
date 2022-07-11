@@ -24,9 +24,9 @@ def plot_inequality_surface(a, b, c, d, h, K, m, z):
     # Make a list of parameter labels
     param_labels = [str(lab) for lab in params]
 
-    def check_inequality(a_val, b_val, h_val, K_val, m_val):
+    def check_inequality(a_val, b_val, h_val, K_val, m_val, z_val):
         "Returns the value of alpha (a) necessary to satisfy the inequality."
-        if a_val < ((b_val**m_val)/((h_val * K_val)**(1 - m_val))):
+        if a_val < (((b_val - z_val)**m_val)/((h_val * K_val)**(1 - m_val))):
             stability = True
         else:
             stability = False
@@ -34,7 +34,7 @@ def plot_inequality_surface(a, b, c, d, h, K, m, z):
 
 
     def inequality_surface(b_val, m_val):
-        return ((b_val**m_val)/(h*K)**(1-m_val))
+        return (((b_val - z_val)**m_val)/(h*K)**(1-m_val))
 
     b_range = np.arange(0.005,1,0.001)
     m_range = np.arange(0.1,1.5,0.001)
@@ -47,7 +47,7 @@ def plot_inequality_surface(a, b, c, d, h, K, m, z):
     ax3D.plot_surface(B, M, A, color = 'black', linewidth = 0, alpha = 0.2)
 
     # Choose the point color according to stability condition
-    stability = check_inequality(a, b, h, K, m)
+    stability = check_inequality(a, b, h, K, m, z)
     if stability:
         point_color = 'green'
     else:

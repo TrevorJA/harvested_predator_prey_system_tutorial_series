@@ -53,5 +53,5 @@ def type_II_equilibrium(params):
     # Re-define specific parameters
     a, b, c, d, h, K, m, z = [x for x in params]
 
-    EQ = [(d)/(a*(c-d*h)),b*(1+a*h*(d/(a*(c-d*h))))*(1-(d/(a*(c-d*h)))/K)/a]
+    EQ = [(d)/(a*(c-d*h)), b*(1+a*h*(d/(a*(c-d*h))))*(1-(d/(a*(c-d*h)))/K)/a]
     return EQ

@@ -22,8 +22,6 @@ from ode_plot_functions import plot_interactive_trajectories
 from ode_plot_functions import plot_time_trajectories
 from plot_inequality_surface import plot_inequality_surface
 
-def test_function():
-    return print('yeo')
 # Set style (unnecessary)
 plt.style.use('ggplot')
 
@@ -31,22 +29,27 @@ plt.style.use('ggplot')
 np.seterr(divide = 'ignore', invalid = 'ignore')
 scipy.special.seterr(all ='ignore')
 
-# Define sliders for later use
-param_labs = ['a: prey availability', 'b: prey growth rate', 'c: rate that prey is converted to predator', 'd: predator death rate', 'h: handling time', 'K: prey carrying capacity', 'm: predator interference rate']
-style = {'description_width': 'initial'}
-a_slider = widgets.FloatSlider(value = 0.005, min = 0.002, max = 2.000, step = 0.001, disabled = False, continuous_update = False, orientation = 'horizontal', readout = True, readout_format = '0.2f', style = style)
-b_slider = widgets.FloatSlider(value = 0.500, min = 0.005, max = 1.000, step = 0.001, disabled = False, continuous_update = False, orientation = 'horizontal', readout = True, readout_format = '0.2f', style = style)
-c_slider = widgets.FloatSlider(value = 0.5, min = 0.2, max = 1.0, step = 0.1, disabled = False, continuous_update = False, orientation = 'horizontal', readout = True, readout_format = '0.2f', style = style)
-d_slider = widgets.FloatSlider(value = 0.10, min = 0.05, max = 0.20, step = 0.01, disabled = False, continuous_update = False, orientation = 'horizontal', readout = True, readout_format = '0.2f', style = style)
-h_slider = widgets.FloatSlider(value = 0.100, min = 0.001, max = 1.000, step = 0.001, disabled = False, continuous_update = False, orientation = 'horizontal', readout = True, readout_format = '0.2f', style = style)
-K_slider = widgets.FloatSlider(value = 2000, min = 100, max = 5000, step = 100,  disabled = False, continuous_update = False, orientation = 'horizontal', readout = True, readout_format = '0.2f', style = style)
-m_slider = widgets.FloatSlider(value = 0.7, min = 0.1, max = 1.5, step = 0.1,  disabled = False, continuous_update = False, orientation = 'horizontal', readout = True, readout_format = '0.2f', style = style)
+def make_fisheries_widget():
+    # Define sliders for later use
+    param_labs = ['a: prey availability', 'b: prey growth rate', 'c: rate that prey is converted to predator', 'd: predator death rate', 'h: handling time', 'K: prey carrying capacity', 'm: predator interference rate', 'z: harvesting effort']
+    style = {'description_width': 'initial'}
+    a_slider = widgets.FloatSlider(value = 0.005, min = 0.002, max = 2.000, step = 0.001, disabled = False, continuous_update = False, orientation = 'horizontal', readout = True, readout_format = '0.2f', style = style)
+    b_slider = widgets.FloatSlider(value = 0.500, min = 0.005, max = 1.000, step = 0.001, disabled = False, continuous_update = False, orientation = 'horizontal', readout = True, readout_format = '0.2f', style = style)
+    c_slider = widgets.FloatSlider(value = 0.5, min = 0.2, max = 1.0, step = 0.1, disabled = False, continuous_update = False, orientation = 'horizontal', readout = True, readout_format = '0.2f', style = style)
+    d_slider = widgets.FloatSlider(value = 0.10, min = 0.05, max = 0.20, step = 0.01, disabled = False, continuous_update = False, orientation = 'horizontal', readout = True, readout_format = '0.2f', style = style)
+    h_slider = widgets.FloatSlider(value = 0.100, min = 0.001, max = 1.000, step = 0.001, disabled = False, continuous_update = False, orientation = 'horizontal', readout = True, readout_format = '0.2f', style = style)
+    K_slider = widgets.FloatSlider(value = 2000, min = 100, max = 5000, step = 100,  disabled = False, continuous_update = False, orientation = 'horizontal', readout = True, readout_format = '0.2f', style = style)
+    m_slider = widgets.FloatSlider(value = 0.7, min = 0.1, max = 1.5, step = 0.1,  disabled = False, continuous_update = False, orientation = 'horizontal', readout = True, readout_format = '0.2f', style = style)
+    z_slider = widgets.FloatSlider(value = 0.00, min = 0.00, max = 1.00, step = 0.01,  disabled = False, continuous_update = False, orientation = 'horizontal', readout = True, readout_format = '0.2f', style = style)
 
-# Set up interactive plots using sliders
-trajectory_plot = interactive_output(plot_interactive_trajectories, {'a' : a_slider, 'b' : b_slider, 'c' : c_slider, 'd' : d_slider, 'h' : h_slider, 'K' : K_slider, 'm' : m_slider})
-time_plot = interactive_output(plot_time_trajectories, {'a' : a_slider, 'b' : b_slider, 'c' : c_slider, 'd' : d_slider, 'h' : h_slider, 'K' : K_slider, 'm' : m_slider})
-surface_output = interactive_output(plot_inequality_surface, {'a' : a_slider, 'b' : b_slider, 'c' : c_slider, 'd' : d_slider, 'h' : h_slider, 'K' : K_slider, 'm' : m_slider})
-surface_output.layout.width = '25%'
-both_plots = HBox([trajectory_plot, time_plot])
-top_row = HBox([VBox([Label(i) for i in param_labs]), VBox([a_slider, b_slider, c_slider, d_slider, h_slider, K_slider, m_slider]), surface_output])
-fisheries_widget = VBox([top_row, both_plots])
+    # Set up interactive plots using sliders
+    trajectory_plot = interactive_output(plot_interactive_trajectories, {'a' : a_slider, 'b' : b_slider, 'c' : c_slider, 'd' : d_slider, 'h' : h_slider, 'K' : K_slider, 'm' : m_slider, 'z': z_slider})
+    time_plot = interactive_output(plot_time_trajectories, {'a' : a_slider, 'b' : b_slider, 'c' : c_slider, 'd' : d_slider, 'h' : h_slider, 'K' : K_slider, 'm' : m_slider, 'z': z_slider})
+    surface_output = interactive_output(plot_inequality_surface, {'a' : a_slider, 'b' : b_slider, 'c' : c_slider, 'd' : d_slider, 'h' : h_slider, 'K' : K_slider, 'm' : m_slider, 'z': z_slider})
+    surface_output.layout.width = '25%'
+    box_layout = widgets.Layout(display='flex', flex_flow = 'row', align_items ='center', justify_content = 'center')
+    both_plots = HBox([trajectory_plot, time_plot])
+    top_row = HBox([VBox([Label(i) for i in param_labs]), VBox([a_slider, b_slider, c_slider, d_slider, h_slider, K_slider, m_slider, z_slider])], layout = box_layout)
+    fishery_widget = VBox([top_row, both_plots])
+
+    return fishery_widget
