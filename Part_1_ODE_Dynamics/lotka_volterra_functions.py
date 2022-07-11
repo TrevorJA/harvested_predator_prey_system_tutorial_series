@@ -29,7 +29,7 @@ def type_II_lotka_volterra(P, t, a, b, c, d, h, K, m, z = 0):
     Returns:
     --------
     """
-    P = [b*P[0]*(1-P[0]/K) - (a*P[0]*P[1])/(P[1]**m + a*h*P[0]),
+    P = [b*P[0]*(1-P[0]/K) - (a*P[0]*P[1])/(P[1]**m + a*h*P[0]) - z*P[0],
     c*(a*P[0]*P[1])/(P[1]**m + a*h*P[0]) - d*P[1]]
     return P
 
@@ -51,7 +51,7 @@ def type_II_equilibrium(params):
     """
 
     # Re-define specific parameters
-    a, b, c, d, h, K, m = [x for x in params]
+    a, b, c, d, h, K, m, z = [x for x in params]
 
     EQ = [(d)/(a*(c-d*h)),b*(1+a*h*(d/(a*(c-d*h))))*(1-(d/(a*(c-d*h)))/K)/a]
     return EQ

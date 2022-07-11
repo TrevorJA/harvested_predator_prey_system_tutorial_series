@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def plot_inequality_surface(a, b, c, d, h, K, m):
+def plot_inequality_surface(a, b, c, d, h, K, m, z):
     """
     Parameters:
     -----------
@@ -19,7 +19,7 @@ def plot_inequality_surface(a, b, c, d, h, K, m):
     """
 
     # Group parameters in a list
-    params = [a, b, c, d, h, K, m]
+    params = [a, b, c, d, h, K, m, z]
 
     # Make a list of parameter labels
     param_labels = [str(lab) for lab in params]
@@ -57,9 +57,9 @@ def plot_inequality_surface(a, b, c, d, h, K, m):
     ax3D.scatter(b, m, a, color = point_color, s = 80)
 
 
-    ax3D.set_xlabel("b", fontsize = 20)
-    ax3D.set_ylabel("m", fontsize = 20)
-    ax3D.set_zlabel("a", fontsize = 20)
+    ax3D.set_xlabel("b", fontsize = 40)
+    ax3D.set_ylabel("m", fontsize = 40)
+    ax3D.set_zlabel("a", fontsize = 40)
     ax3D.set_zlim([0.0,2.0])
     ax3D.set_xlim([0.0,1.0])
     ax3D.set_ylim([0.0,1.5])

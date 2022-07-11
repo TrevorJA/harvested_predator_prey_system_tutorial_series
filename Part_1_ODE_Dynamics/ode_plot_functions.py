@@ -16,7 +16,7 @@ from lotka_volterra_functions import type_II_lotka_volterra
 from lotka_volterra_functions import type_II_equilibrium, type_II_lotka_volterra
 
 ################################################################################
-def plot_interactive_trajectories(a, b, c, d, h, K, m):
+def plot_interactive_trajectories(a, b, c, d, h, K, m, z):
     """
     Plots the trajectories of many initial conditions integrated over a provided
     ODE.
@@ -40,7 +40,6 @@ def plot_interactive_trajectories(a, b, c, d, h, K, m):
     Returns:
     --------
     None.
-
     """
 
     # ODE
@@ -50,7 +49,7 @@ def plot_interactive_trajectories(a, b, c, d, h, K, m):
     initial_conditions = np.linspace(0.1, 5, 5)
 
     # Group parameters
-    params = (a, b, c, d, h, K, m)
+    params = (a, b, c, d, h, K, m, z)
 
     # Define a set of colors for each initial condition trajectory
     trajectory_colors = plt.cm.autumn_r(np.linspace(0.1, 1, len(initial_conditions)))
@@ -70,7 +69,7 @@ def plot_interactive_trajectories(a, b, c, d, h, K, m):
         Path = integrate.odeint(ode_function, P0, t, (params))
 
         # Plot trajectory
-        plt.plot(Path[:,0], Path[:,1], color = line_color, label = 'P0=(%.f, %.f)' % (P0[0], P0[1]))
+        plt.plot(Path[:,0], Path[:,1], color = line_color, label = '(%.f, %.f)' % (P0[0], P0[1]))
 
     ymax = plt.ylim(ymin=0)[1]
     xmax = plt.xlim(xmin=0)[1]
@@ -106,7 +105,7 @@ def plot_interactive_trajectories(a, b, c, d, h, K, m):
     # Labels and axis limits
     plt.xlabel('Prey Abundance')
     plt.ylabel('Predator Abundance')
-    plt.legend(bbox_to_anchor = (1.05, 1.0))
+    plt.legend(bbox_to_anchor = (1.05, 1.0), title = "Initial Abundance\n (Prey, Pred.)")
     plt.grid()
     plt.xlim(0, xmax)
     plt.ylim(0, ymax)
@@ -118,7 +117,7 @@ def plot_interactive_trajectories(a, b, c, d, h, K, m):
 
 ################################################################################
 
-def plot_time_trajectories(a, b, c, d, h, K, m):
+def plot_time_trajectories(a, b, c, d, h, K, m, z):
     """
     Plots both predator and prey populations through time.
 
@@ -152,7 +151,7 @@ def plot_time_trajectories(a, b, c, d, h, K, m):
     initial_conditions = np.linspace(0.1, 5, 5)
 
     # Group parameters
-    params = (a, b, c, d, h, K, m)
+    params = (a, b, c, d, h, K, m, z)
 
     # Define a set of colors for each initial condition trajectory
     trajectory_colors = plt.cm.autumn_r(np.linspace(0.1, 1, len(initial_conditions)))
