@@ -16,7 +16,7 @@ from lotka_volterra_functions import type_II_lotka_volterra
 from lotka_volterra_functions import type_II_equilibrium, type_II_lotka_volterra
 
 ################################################################################
-def plot_interactive_trajectories(a, b, c, d, h, K, m, z):
+def plot_interactive_trajectories(a, b, c, d, h, K, m, z = 0):
     """
     Plots the trajectories of many initial conditions integrated over a provided
     ODE.
@@ -117,7 +117,7 @@ def plot_interactive_trajectories(a, b, c, d, h, K, m, z):
 
 ################################################################################
 
-def plot_time_trajectories(a, b, c, d, h, K, m, z):
+def plot_time_trajectories(a, b, c, d, h, K, m, z = 0):
     """
     Plots both predator and prey populations through time.
 
