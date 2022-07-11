@@ -20,6 +20,26 @@ def plot_interactive_trajectories(a, b, c, d, h, K, m):
     """
     Plots the trajectories of many initial conditions integrated over a provided
     ODE.
+    Parameters:
+    -----------
+    a: float
+        The availability of prey to the predator.
+    b: float
+        The prey death rate.
+    c: float
+        The rate that prey is converted to new predators.
+    d: float
+        The predator death rate.
+    h: float
+        The handling time of the predator after catching prey.
+    K: float
+        The prey population carrying capacity.
+    m: float
+        The predator interference rate.
+
+    Returns:
+    --------
+    None.
 
     """
 
@@ -104,12 +124,20 @@ def plot_time_trajectories(a, b, c, d, h, K, m):
 
     Parameters:
     -----------
-    ode_function: function
-        The function describing the predator-prey system of ODEs.
-    initial_conditions: array [1x2]
-        The array containing the initial conditions [prey, predator].
-    params: list
-        The parameters used in the ODE.
+    a: float
+        The availability of prey to the predator.
+    b: float
+        The prey death rate.
+    c: float
+        The rate that prey is converted to new predators.
+    d: float
+        The predator death rate.
+    h: float
+        The handling time of the predator after catching prey.
+    K: float
+        The prey population carrying capacity.
+    m: float
+        The predator interference rate.
 
 
     Returns:
