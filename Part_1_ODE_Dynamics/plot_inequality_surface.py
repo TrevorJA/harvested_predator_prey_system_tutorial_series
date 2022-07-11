@@ -44,7 +44,7 @@ def plot_inequality_surface(a, b, c, d, h, K, m):
 
     fig = plt.figure(figsize=(12,9))
     ax3D = fig.add_subplot(projection='3d')
-    ax3D.plot_surface(B, M, A, color = 'b', linewidth = 0, alpha = 0.25)
+    ax3D.plot_surface(B, M, A, color = 'black', linewidth = 0, alpha = 0.2)
 
     # Choose the point color according to stability condition
     stability = check_inequality(a, b, h, K, m)
@@ -54,12 +54,12 @@ def plot_inequality_surface(a, b, c, d, h, K, m):
         point_color = 'red'
 
 
-    ax3D.scatter(b, m, a, color = point_color, s = 60)
+    ax3D.scatter(b, m, a, color = point_color, s = 80)
 
 
-    ax3D.set_xlabel("b")
-    ax3D.set_ylabel("m")
-    ax3D.set_zlabel("a")
+    ax3D.set_xlabel("b", fontsize = 20)
+    ax3D.set_ylabel("m", fontsize = 20)
+    ax3D.set_zlabel("a", fontsize = 20)
     ax3D.set_zlim([0.0,2.0])
     ax3D.set_xlim([0.0,1.0])
     ax3D.set_ylim([0.0,1.5])
