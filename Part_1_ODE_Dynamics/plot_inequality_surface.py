@@ -34,7 +34,7 @@ def plot_inequality_surface(a, b, c, d, h, K, m, z):
 
 
     def inequality_surface(b_val, m_val):
-        return (((b_val - z_val)**m_val)/(h*K)**(1-m_val))
+        return (((b_val - z)**m_val)/(h*K)**(1-m_val))
 
     b_range = np.arange(0.005,1,0.001)
     m_range = np.arange(0.1,1.5,0.001)
@@ -44,7 +44,7 @@ def plot_inequality_surface(a, b, c, d, h, K, m, z):
 
     fig = plt.figure(figsize=(12,9))
     ax3D = fig.add_subplot(projection='3d')
-    ax3D.plot_surface(B, M, A, color = 'black', linewidth = 0, alpha = 0.2)
+    ax3D.plot_surface(B, M, A, color = 'grey', linewidth = 0, alpha = 0.1)
 
     # Choose the point color according to stability condition
     stability = check_inequality(a, b, h, K, m, z)
@@ -65,7 +65,7 @@ def plot_inequality_surface(a, b, c, d, h, K, m, z):
     ax3D.set_ylim([0.0,1.5])
     ax3D.xaxis.set_view_interval(0,  0.5)
     ax3D.set_facecolor('white')
-    #ax3D.view_init(12, -17)
+    ax3D.view_init(12, -17)
 
     plt.show()
     return
