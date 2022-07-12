@@ -29,7 +29,6 @@ from lotka_volterra_functions import type_II_lotka_volterra
 from lotka_volterra_functions import type_II_equilibrium
 from ode_plot_functions import plot_interactive_trajectories
 from ode_plot_functions import plot_time_trajectories
-from plot_inequality_surface import plot_inequality_surface
 
 # Set style (unnecessary)
 plt.style.use('ggplot')
