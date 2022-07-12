@@ -3,17 +3,17 @@ Author: Trevor Amestoy
 Cornell University
 Spring 2022
 
-Contains many different plots for visualizing ode dynamics.
+Contains scripts used to solve and plot the behavior of the Lotka-Volterra
+system of ODEs.
 """
-
+# Import core modules
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import integrate
 
-
+# Import custome functions
 from lotka_volterra_functions import type_II_equilibrium
 from lotka_volterra_functions import type_II_lotka_volterra
-from lotka_volterra_functions import type_II_equilibrium, type_II_lotka_volterra
 
 ################################################################################
 def plot_interactive_trajectories(a, b, c, d, h, K, m, z = 0):

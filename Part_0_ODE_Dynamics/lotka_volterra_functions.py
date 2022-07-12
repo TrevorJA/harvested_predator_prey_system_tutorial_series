@@ -15,7 +15,7 @@ Contents:
 
 import numpy as np
 
-#
+# The ODE system of equations
 def type_II_lotka_volterra(P, t, a, b, c, d, h, K, m, z = 0):
     """
     Parameters:
