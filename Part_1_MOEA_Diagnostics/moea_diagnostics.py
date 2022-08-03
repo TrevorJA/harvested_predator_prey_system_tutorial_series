@@ -7,13 +7,14 @@ Code adapted from https://waterprogramming.wordpress.com/2021/08/13/introduction
 """
 
 # import all required libraries
-from platypus import Problem, Real, Hypervolume, EpsilonIndicator, GenerationalDistance
+from platypus import (Problem, Real, Hypervolume)
 from pyborg import BorgMOEA
-from runtime_diagnostics import runtime_hvol, runtime_epsilon, runtime_gdistance
+from runtime_diagnostics import runtime_hvol
 from fish_game import fish_game, plot_3d_tradeoff, plot_runtime
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
+import time
 
+#%%
 """
 Code to run BorgMOEA starts here
 Obj1: Mean NPV for all realizations
@@ -24,11 +25,10 @@ Obj5: Mean variance of harvest
 
 """
 
-# USER-DEFINED
-# Define number of decision variables, objectives, and constraints
-nVars = 9
-nObjs = 5
-nCnstr = 1 
+# Based on Hadjimichael et al 2020
+nVars = 9   # Define number of decision variables
+nObjs = 5   # Define number of objective -- USER DEFINED
+#nCnstr = 1      # Define number of decision constraints
 
 problem = Problem(nVars, nObjs)     
 
@@ -50,41 +50,49 @@ problem.constraints[:] = ">=0"
 problem.function = fish_game
 
 algorithm = BorgMOEA(problem, epsilons=0.001)
-algorithm.run(10000)
 
+# begin timing the borg run
+borg_start_time = time.time()
+algorithm.run(1000)
+borg_end_time = time.time()
 
-# Plotting begins here
-# define detailed_run parameters
-maxevals = 10000
-frequency = 1000
-output = "fishery.data"
+borg_total_time = borg_end_time - borg_start_time
 
-# set inputs for measuring hypervolume
-hv = Hypervolume(minimum=[-6000, 0, 0, 0, -32000], maximum=[0, 1, 100, 250, 0])
-# set inputs for measuring epsilon indicator
-epi = EpsilonIndicator(minimum=[-6000, 0, 0, 0, -32000], maximum=[0, 1, 100, 250, 0])
-# set inputs for measuring generational distance
-gd = GenerationalDistance(minimum=[-6000, 0, 0, 0, -32000], maximum=[0, 1, 100, 250, 0])
+print(f"borg_total_time={borg_total_time}s")
 
-nfe, hyp = runtime_hvol(algorithm, maxevals, frequency, output, hv)
-nfe, epsInd = runtime_epsilon(algorithm, maxevals, frequency, output, epi)
-nfe, genDist = runtime_gdistance(algorithm, maxevals, frequency, output, gd)
+#%%
 
-
-fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
+# Plot objective tradeoff surface
+fig_objs = plt.figure()
+ax_objs = fig_objs.add_subplot(111, projection='3d')
 
 objs_indices = [0, 1, 2]
 obj_labels = ['Mean NPV', 'Mean prey deficit', 'Mean WCLH']
 obj_min = [-6000, 0, 0]
 
-plot_3d_tradeoff(algorithm, ax, objs_indices, obj_labels, obj_min)
+plot_3d_tradeoff(algorithm, ax_objs, objs_indices, obj_labels, obj_min)
+
+#%%
+# Plot hypervolume
+# define detailed_run parameters
+maxevals = 4000
+frequency = 100
+output = "fishery.data"
+
+# set inputs for measuring hypervolume
+hv = Hypervolume(minimum=[-6000, 0, 0, 0, -32000], maximum=[0, 1, 100, 250, 0])
+
+# Note: Cannot plot epsilon indicator and GD as those require reference sets, which 
+# the fisheries problem does not have
+
+nfe, hyp = runtime_hvol(algorithm, maxevals, frequency, output, hv)
+print(f"hv = {hv}")
 
 # plot hypervolume
-plot_runtime(nfe, hyp, 'PyBorg Runtime Hypervolume Fish game', 'Hypervolume')
-# plot epsilon indicator
-plot_runtime(nfe, hyp, 'PyBorg Runtime Eps. Indicator Fish game', 'Epsilon indicator')
-# plot generational distance
-plot_runtime(nfe, hyp, 'PyBorg Runtime Gen. Distance Fish game', 'Gen. distance')
-
+#plot_runtime(nfe, hyp, 'PyBorg Runtime (Hypervolume)', 'Hypervolume')
+plt.plot(nfe, hyp)
+plt.title('PyBorg Runtime (Hypervolume)')
+plt.xlabel('Number of Function Evaluations')
+plt.ylabel('Hypervolume')
+plt.show()
 

@@ -254,7 +254,6 @@ def plot_runtime(nfe, metric, runtime_title, metric_label):
     None.
 
     """
-    
     plt.plot(nfe, metric)
     plt.title(runtime_title)
     plt.xlabel('Number of Function Evaluations')
