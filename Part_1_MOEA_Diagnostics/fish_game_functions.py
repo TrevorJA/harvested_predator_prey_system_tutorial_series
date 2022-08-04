@@ -13,12 +13,9 @@ Code adapted from:
     Original code found in serial-borg-moea/Python/dtlz2_advanced.py 
     Authors: Andrew Dircks & Dave Hadka
 """
-<<<<<<< HEAD:Part_1_MOEA_Diagnostics/fish_game_functions.py
 
 import numpy as np 
-=======
 import numpy as np
->>>>>>> 4104c6e99b625aab32cfa52558108d9a31af0a1d:Part_1_MOEA_Diagnostics/fish_game.py
 import itertools
 import matplotlib.pyplot as plt
 import time
@@ -498,8 +495,3 @@ def select_objective(obj_name):
         obj_min = 0
     
     return obj_num, obj_min
-
-
-
-=======
->>>>>>> 4104c6e99b625aab32cfa52558108d9a31af0a1d:Part_1_MOEA_Diagnostics/fish_game.py

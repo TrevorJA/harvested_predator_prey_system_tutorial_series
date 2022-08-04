@@ -28,7 +28,6 @@ Obj5: Mean variance of harvest
 """
 #%%
 # Based on Hadjimichael et al 2020
-<<<<<<< HEAD
 prob_formulation = widgets.Dropdown(options=['5-objective', '3-objective'],
                          description='', value='5-objective', disabled=False)
 display(prob_formulation)
@@ -45,14 +44,12 @@ nCnstr = 1      # Define number of decision constraints
 
 #%%
 problem = Problem(nVars, nObjs, nCnstr)     
-=======
 nVars = 6   # Define number of decision variables
 nObjs = 5   # Define number of objective -- USER DEFINED
 #nObjs = 3 # change to 3 to make the problem easier
 nCnstr = 1      # Define number of decision constraints
 
 problem = Problem(nVars, nObjs, nCnstr)
->>>>>>> 4104c6e99b625aab32cfa52558108d9a31af0a1d
 
 # set bounds for each decision variable
 problem.types[0] = Real(0.0, 1.0)
@@ -61,10 +58,6 @@ problem.types[2] = Real(0.0, 1.0)
 problem.types[3] = Real(0.0, 1.0)
 problem.types[4] = Real(0.0, 1.0)
 problem.types[5] = Real(0.0, 1.0)
-<<<<<<< HEAD
-=======
-
->>>>>>> 4104c6e99b625aab32cfa52558108d9a31af0a1d
 
 # all values should be nonzero
 problem.constraints[:] = "==0"
