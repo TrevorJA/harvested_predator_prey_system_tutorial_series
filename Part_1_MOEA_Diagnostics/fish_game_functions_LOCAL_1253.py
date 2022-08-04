@@ -13,21 +13,17 @@ Code adapted from:
     Original code found in serial-borg-moea/Python/dtlz2_advanced.py 
     Authors: Andrew Dircks & Dave Hadka
 """
-<<<<<<< HEAD:Part_1_MOEA_Diagnostics/fish_game_functions.py
 
 import numpy as np 
-=======
-import numpy as np
->>>>>>> 4104c6e99b625aab32cfa52558108d9a31af0a1d:Part_1_MOEA_Diagnostics/fish_game.py
 import itertools
 import matplotlib.pyplot as plt
 import time
 import datetime
 
-def harvest_strategy(Inputs, vars, input_ranges, output_ranges, nIn, nOut, nRBF):
+def hrvSTR(Inputs, vars, input_ranges, output_ranges, nIn, nOut, nRBF):
     """
     Calculate outputs (u) corresponding to each sample of inputs
-
+    
     Parameters
     ----------
     Inputs : TYPE
@@ -41,8 +37,8 @@ def harvest_strategy(Inputs, vars, input_ranges, output_ranges, nIn, nOut, nRBF)
 
     Returns
     -------
-    norm_u : matrix
-        A 2D matrix with nOut columns and as many rows as there are samples of
+    norm_u : matrix 
+        A 2D matrix with nOut columns and as many rows as there are samples of 
         input.
 
     """
@@ -55,7 +51,7 @@ def harvest_strategy(Inputs, vars, input_ranges, output_ranges, nIn, nOut, nRBF)
     C = np.zeros([nIn,nRBF])
     R = np.zeros([nIn,nRBF])
     W = np.zeros([nOut,nRBF])
-
+    
     for n in range(nRBF):
         for m in range(nIn):
             C[m,n] = vars[(2*nIn+nOut)*n + 2*m]
@@ -68,7 +64,7 @@ def harvest_strategy(Inputs, vars, input_ranges, output_ranges, nIn, nOut, nRBF)
     for k in range(nOut):
         if totals[k] > 0:
             W[k,:] = W[k,:]/totals[k]
-
+    
     # Normalize inputs
     norm_in = np.zeros(nIn)
     for m in range (nIn):
@@ -217,7 +213,7 @@ def fish_game_5_objs(vars):
 
     # Get chosen strategy
     strategy = 'Previous_Prey'
-
+    
     # Define variables for RBFs
     nIn = 1 # no. of inputs (depending on selected strategy)
     nOut = 1 # no. of outputs (depending on selected strategy)
@@ -228,7 +224,7 @@ def fish_game_5_objs(vars):
 
     tSteps = 100 # no. of timesteps to run the fish game on
     N = 100 # Number of realizations of environmental stochasticity
-
+    
     # Get system behavior parameters (need to convert from string to float)
     a = 0.005
     b = 0.5
@@ -260,7 +256,7 @@ def fish_game_5_objs(vars):
     variance = np.zeros(N)
 
     # Create arrays to store objectives and constraints
-    objs = [0.0]*nObjs
+    objs = [0.0]*nObjs   
     cnstr = [0.0]*nCnstr
 
     # Create array with environmental stochasticity for prey
@@ -274,7 +270,7 @@ def fish_game_5_objs(vars):
         # Initialize populations and values
         x[0] = prey[i,0] = K
         y[0] = predator[i,0] = 250
-        z[0] = effort[i,0] = harvest_strategy([x[0]], vars, [[0, K]], [[0, 1]], nIn, nOut, nRBF)
+        z[0] = effort[i,0] = hrvSTR([x[0]], vars, [[0, K]], [[0, 1]], nIn, nOut, nRBF)
         NPVharvest = harvest[i,0] = effort[i,0]*x[0]
         # Go through all timesteps for prey, predator, and harvest
         for t in range(tSteps):
@@ -285,7 +281,7 @@ def fish_game_5_objs(vars):
                     if strategy == 'Previous_Prey':
                         input_ranges = [[0, K]] # Prey pop. range to use for normalization
                         output_ranges = [[0, 1]] # Range to de-normalize harvest to
-                        z[t+1] = harvest_strategy([x[t]], vars, input_ranges, output_ranges, nIn, nOut, nRBF)
+                        z[t+1] = hrvSTR([x[t]], vars, input_ranges, output_ranges, nIn, nOut, nRBF)
             prey[i,t+1] = x[t+1]
             predator[i,t+1] = y[t+1]
             effort[i,t+1] = z[t+1]
@@ -309,8 +305,8 @@ def fish_game_5_objs(vars):
     objs[4] = np.mean(variance) # Mean variance of harvest
 
     cnstr[0] = np.mean((predator < 1).sum(axis=1)) # Mean number of predator extinction days per realization
-
-    # output should be all the objectives
+    
+    # output should be all the objectives 
     #return objs[0],objs[1],objs[2],objs[3],objs[4]
     return objs, cnstr
 
@@ -324,13 +320,13 @@ def plot_3d_tradeoff(algorithm, ax, obj_indices, obj_labels, obj_min):
         Algorithm object of which results are to be visualized
     ax : matplotlib object
         3D axis for plotting. Should already be initialized.
-    obj_indices : list (int)
+    obj_indices : list (int) 
         List of objective indices to be plotted. Should be ordered such that the
         desired objectives are plotted as axes x, y, and z respectively.
-    obj_labels : list (strings)
+    obj_labels : list (strings) 
         List of objective labels to be plotted. Should be ordered such that the
         desired objectives are plotted as axes x, y, and z respectively.
-    obj_min : list (int)
+    obj_min : list (int) 
         List of minimum objective values to be plotted. Should be ordered such that the
         desired objectives are plotted as axes x, y, and z respectively.
     Returns
@@ -341,19 +337,19 @@ def plot_3d_tradeoff(algorithm, ax, obj_indices, obj_labels, obj_min):
     obj1_idx = obj_indices[0]
     obj2_idx = obj_indices[1]
     obj3_idx = obj_indices[2]
-
+    
     obj1_lab = obj_labels[0]
     obj2_lab = obj_labels[1]
     obj3_lab = obj_labels[2]
-
+    
     ax.scatter([s.objectives[obj1_idx] for s in algorithm.result],
                [s.objectives[obj2_idx] for s in algorithm.result],
                [s.objectives[obj3_idx] for s in algorithm.result])
-
+    
     ax.set_xlabel(obj1_lab)
     ax.set_ylabel(obj2_lab)
     ax.set_zlabel(obj3_lab)
-
+    
     ax.scatter(obj_min[0], obj_min[1], obj_min[2], marker="*", c='orange', s=50)
     plt.show()
 
@@ -382,7 +378,6 @@ def plot_runtime(nfe, metric, runtime_title, metric_label):
     plt.xlabel('Number of Function Evaluations')
     plt.ylabel(metric_label)
     plt.show()
-<<<<<<< HEAD:Part_1_MOEA_Diagnostics/fish_game_functions.py
     
 def runtime_hvol(algorithm, maxevals, frequency, file, hv):
     """
@@ -501,5 +496,3 @@ def select_objective(obj_name):
 
 
 
-=======
->>>>>>> 4104c6e99b625aab32cfa52558108d9a31af0a1d:Part_1_MOEA_Diagnostics/fish_game.py
