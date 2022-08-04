@@ -15,11 +15,17 @@ Code adapted from:
 """
 
 import numpy as np 
-import numpy as np
 import itertools
 import matplotlib.pyplot as plt
 import time
 import datetime
+import pyborg
+from platypus import (Problem, Real, Hypervolume)
+from pyborg import BorgMOEA
+from fish_game_functions import *
+import ipywidgets as widgets
+from ipywidgets import HBox, VBox, Layout, Label
+import random
 
 def harvest_strategy(Inputs, vars, input_ranges, output_ranges, nIn, nOut, nRBF):
     """
@@ -379,7 +385,6 @@ def plot_runtime(nfe, metric, runtime_title, metric_label):
     plt.xlabel('Number of Function Evaluations')
     plt.ylabel(metric_label)
     plt.show()
-<<<<<<< HEAD:Part_1_MOEA_Diagnostics/fish_game_functions.py
     
 def runtime_hvol(algorithm, maxevals, frequency, file, hv):
     """
@@ -495,3 +500,97 @@ def select_objective(obj_name):
         obj_min = 0
     
     return obj_num, obj_min
+
+
+def fisheries_game_problem_setup(nVars, nObjs, nCnstr, pop_size=100):
+    """
+    Sets up and runs the fisheries game for a given population size
+    
+    Parameters
+    ----------
+    nVars : int
+        Number of decision variables.
+    nObjs : int
+        Number of performance objectives.
+    nCnstr : int
+        Number of constraints.
+    pop_size : int, optional
+        Initial population size of the randomly-generated set of solutions. 
+        The default is 100.
+
+    Returns
+    -------
+    algorithm : pyBorg object
+        The algorthm to optimize with a unique initial population size.
+
+    """
+    # Set up the problem
+    problem = Problem(nVars, nObjs, nCnstr)     
+    nVars = 6   # Define number of decision variables
+    nObjs = 5   # Define number of objective -- USER DEFINED
+    nCnstr = 1      # Define number of decision constraints
+    
+    problem = Problem(nVars, nObjs, nCnstr)
+    
+    # set bounds for each decision variable
+    problem.types[0] = Real(0.0, 1.0)
+    problem.types[1] = Real(0.0, 1.0)
+    problem.types[2] = Real(0.0, 1.0)
+    problem.types[3] = Real(0.0, 1.0)
+    problem.types[4] = Real(0.0, 1.0)
+    problem.types[5] = Real(0.0, 1.0)
+    
+    # all values should be nonzero
+    problem.constraints[:] = "==0"
+    
+    # set problem function
+    if nObjs == 5:
+        problem.function = fish_game_5_objs
+    else:
+        problem.function = fish_game_3_objs
+    
+    algorithm = BorgMOEA(problem, epsilons=0.001, population_size=pop_size)
+    return algorithm
+
+def plot_hvol(algorithm, maxevals, frequency, min_list, max_list, ax, pop_size=100):
+    """
+    Plots the hypervolume for up to NFE = maxevals
+
+    Parameters
+    ----------
+    maxevals : int
+        Maximum number of function evaluations.
+    frequency : int
+        NFE step size determined by the user .
+    min_list : list
+        Lower limit for all performance objectives.
+    max_list : list
+        Lower limit for all performance objectives.
+    pop_size : int
+        The population size for this randomly-generated seed
+
+    Returns
+    -------
+    None.
+
+    """
+    # save the output for each population size as it's own unique output file
+    output = "fishery_" + str(pop_size) + ".data"
+
+    # set inputs for measuring hypervolume
+    hv = Hypervolume(minimum=min_list, maximum=max_list)
+
+    # Note: Cannot plot epsilon indicator and GD as those require reference sets, which
+    # the fisheries problem does not have
+
+    nfe, hyp = runtime_hvol(algorithm, maxevals, frequency, output, hv)
+
+    # plot hypervolume
+    #plot_runtime(nfe, hyp, 'PyBorg Runtime (Hypervolume)', 'Hypervolume')
+    legend_label = "Pop. size=" + str(pop_size)
+    r = random.randint(0,255)
+    g = random.randint(0,255)
+    b = random.randint(0,255)
+    rgb = [r,g,b]
+
+    ax.plot(nfe, hyp, label=legend_label, color=rgb)
