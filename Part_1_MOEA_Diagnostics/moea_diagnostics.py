@@ -26,23 +26,21 @@ Obj5: Mean variance of harvest
 """
 
 # Based on Hadjimichael et al 2020
-nVars = 9   # Define number of decision variables
-#nObjs = 5   # Define number of objective -- USER DEFINED
-nObjs = 3 # change to 3 to make the problem easier
+nVars = 6   # Define number of decision variables
+nObjs = 5   # Define number of objective -- USER DEFINED
+#nObjs = 3 # change to 3 to make the problem easier
 nCnstr = 1      # Define number of decision constraints
 
-problem = Problem(nVars, nObjs, nCnstr)     
+problem = Problem(nVars, nObjs, nCnstr)
 
 # set bounds for each decision variable
-problem.types[0] = Real(0.002,2.00)
-problem.types[1] = Real(0.005,1.00)
-problem.types[2] = Real(0.2,1.001)
-problem.types[3] = Real(0.05,0.201)
-problem.types[4] = Real(0.001,2.001)
-problem.types[5] = Real(100,5000.001)
-problem.types[6] = Real(0.1,1.501)
-problem.types[7] = Real(0.001,0.011)
-problem.types[8] = Real(0.001,0.011)
+problem.types[0] = Real(0.0, 1.0)
+problem.types[1] = Real(0.0, 1.0)
+problem.types[2] = Real(0.0, 1.0)
+problem.types[3] = Real(0.0, 1.0)
+problem.types[4] = Real(0.0, 1.0)
+problem.types[5] = Real(0.0, 1.0)
+
 
 # all values should be nonzero
 problem.constraints[:] = "==0"
@@ -76,14 +74,14 @@ plot_3d_tradeoff(algorithm, ax_objs, objs_indices, obj_labels, obj_min)
 #%%
 # Plot hypervolume
 # define detailed_run parameters
-maxevals = 10000
+maxevals = 500
 frequency = 100
 output = "fishery.data"
 
 # set inputs for measuring hypervolume
 hv = Hypervolume(minimum=[-6000, 0, 0, -250, 0], maximum=[0, 1, 100, 0, 32000])
 
-# Note: Cannot plot epsilon indicator and GD as those require reference sets, which 
+# Note: Cannot plot epsilon indicator and GD as those require reference sets, which
 # the fisheries problem does not have
 
 nfe, hyp = runtime_hvol(algorithm, maxevals, frequency, output, hv)
@@ -95,4 +93,3 @@ plt.title('PyBorg Runtime (Hypervolume)')
 plt.xlabel('Number of Function Evaluations')
 plt.ylabel('Hypervolume')
 plt.show()
-
