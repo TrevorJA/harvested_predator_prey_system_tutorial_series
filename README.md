@@ -1,4 +1,4 @@
-# harvested_predator_prey_system_tutorial_series
+# Harvested Predator-Prey System - Tutorial Series
 Contains scripts used to explore the dynamics of a harvested predator prey system.
 
 This tutorial series is inspired by the work of Hadjimichael, Reed, and Quinn (2020), [_Navigating Deeply Uncertain Tradeoffs in a Harvested Predator-Prey System_](https://www.hindawi.com/journals/complexity/2020/4170453/).
@@ -16,6 +16,25 @@ Stability conditions are derived, and an interactive Jupyter Notebook widget is 
 <p align="center">
     <img src="https://github.com/TrevorJA/harvested_predator_prey_system_tutorial_series/blob/main/Part_0_ODE_Dynamics/example_figures/Animation_stable.gif" alt = "Demonstration of the interactive ODE widget." />
 </p>
+
+
+### Post 1: Harvest Optimization and MOEA Diagnostics
+
+The second post in the series, [accessible here through the WaterProgramming blog], or interactively through [the Binder environment here], studies the multi-objective optimization of harvesting strategies within the predator-prey system.
+
+Multiple harvesting objectives are defined, including:
+
+1. Discounted profits
+2. Prey population deficit
+3. Longest duration of consecutive law
+4. Worst harvest instance
+5. Harvest variance
+
+Additionally, a constraint is included which _avoids collapse of predator population_.
+
+The [Borg Multi-objective evolutionary algorithm](http://borgmoea.org/) (MOEA) is used to optimize a state-aware adaptive harvesting policy, which prescribes harvesting efforts dependent upon the current prey population levels. The Borg MOEA is employed through a python-wrapper (pyBorg).
+
+
 
 ## Content
 
