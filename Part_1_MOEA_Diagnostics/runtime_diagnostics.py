@@ -57,13 +57,14 @@ def runtime_hvol(algorithm, maxevals, frequency, file, hv):
     
     nfe = []
     hyp = []
-    front = []
+    #front = []
 
     # run the algorithm/problem for specified number of function evaluations
     while (algorithm.nfe <= maxevals):
         # step the algorithm
         algorithm.step()
-
+        #algorithm.run(algorithm.nfe + frequency)
+        
         # print to file if necessary
         if (algorithm.nfe >= last_log + frequency):
             last_log = algorithm.nfe
@@ -79,10 +80,16 @@ def runtime_hvol(algorithm, maxevals, frequency, file, hv):
                 for j in range(nobjs):
                     f.write(str(sol.objectives[j]) + " ")
                 f.write("\n")
+            
             nfe.append(last_log)
             # use Platypus hypervolume indicator on the current archive
             result = hv.calculate(algorithm.archive[:])
+            #result = hv.calc_internal(algorithm.archive[:], len(algorithm.archive[:]), 5)
+            #print(f"currrent hyp = {result}")
             hyp.append(result)
     # close the runtime file
+    end_time = time.time()
+    total_time = end_time - start_time
+    f.write("\nTime taken = " + str(total_time))
     f.close()
     return nfe, hyp

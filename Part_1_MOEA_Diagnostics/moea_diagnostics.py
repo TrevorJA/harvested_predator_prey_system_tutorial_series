@@ -7,7 +7,7 @@ Code adapted from https://waterprogramming.wordpress.com/2021/08/13/introduction
 """
 
 # import all required libraries
-from platypus import (Problem, Real, Hypervolume)
+from platypus import (Problem, Real, Hypervolume, Generator)
 from pyborg import BorgMOEA
 from runtime_diagnostics import runtime_hvol
 from fish_game import fish_game, plot_3d_tradeoff, plot_runtime
@@ -27,14 +27,15 @@ Obj5: Mean variance of harvest
 
 # Based on Hadjimichael et al 2020
 nVars = 9   # Define number of decision variables
-nObjs = 5   # Define number of objective -- USER DEFINED
-#nCnstr = 1      # Define number of decision constraints
+#nObjs = 5   # Define number of objective -- USER DEFINED
+nObjs = 3 # change to 3 to make the problem easier
+nCnstr = 1      # Define number of decision constraints
 
-problem = Problem(nVars, nObjs)     
+problem = Problem(nVars, nObjs, nCnstr)     
 
 # set bounds for each decision variable
-problem.types[0] = Real(0.002,2.001)
-problem.types[1] = Real(0.005,1.001)
+problem.types[0] = Real(0.002,2.00)
+problem.types[1] = Real(0.005,1.00)
 problem.types[2] = Real(0.2,1.001)
 problem.types[3] = Real(0.05,0.201)
 problem.types[4] = Real(0.001,2.001)
@@ -44,7 +45,7 @@ problem.types[7] = Real(0.001,0.011)
 problem.types[8] = Real(0.001,0.011)
 
 # all values should be nonzero
-problem.constraints[:] = ">=0"
+problem.constraints[:] = "==0"
 
 # set problem function
 problem.function = fish_game
@@ -53,7 +54,7 @@ algorithm = BorgMOEA(problem, epsilons=0.001)
 
 # begin timing the borg run
 borg_start_time = time.time()
-algorithm.run(1000)
+algorithm.run(100)
 borg_end_time = time.time()
 
 borg_total_time = borg_end_time - borg_start_time
@@ -75,18 +76,17 @@ plot_3d_tradeoff(algorithm, ax_objs, objs_indices, obj_labels, obj_min)
 #%%
 # Plot hypervolume
 # define detailed_run parameters
-maxevals = 4000
+maxevals = 10000
 frequency = 100
 output = "fishery.data"
 
 # set inputs for measuring hypervolume
-hv = Hypervolume(minimum=[-6000, 0, 0, 0, -32000], maximum=[0, 1, 100, 250, 0])
+hv = Hypervolume(minimum=[-6000, 0, 0, -250, 0], maximum=[0, 1, 100, 0, 32000])
 
 # Note: Cannot plot epsilon indicator and GD as those require reference sets, which 
 # the fisheries problem does not have
 
 nfe, hyp = runtime_hvol(algorithm, maxevals, frequency, output, hv)
-print(f"hv = {hv}")
 
 # plot hypervolume
 #plot_runtime(nfe, hyp, 'PyBorg Runtime (Hypervolume)', 'Hypervolume')

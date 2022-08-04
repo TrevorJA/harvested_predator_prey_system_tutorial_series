@@ -187,9 +187,9 @@ def fish_game(vars):
 
     cnstr[0] = np.mean((predator < 1).sum(axis=1)) # Mean number of predator extinction days per realization
     
-    # output should be all the objectives
-    return objs[0],objs[1],objs[2],objs[3],objs[4]
-
+    # output should be all the objectives 
+    #return objs[0],objs[1],objs[2],objs[3],objs[4]
+    return objs, cnstr
 
 def plot_3d_tradeoff(algorithm, ax, obj_indices, obj_labels, obj_min):
     """
