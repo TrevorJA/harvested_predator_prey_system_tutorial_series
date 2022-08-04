@@ -74,7 +74,7 @@ plot_3d_tradeoff(algorithm, ax_objs, objs_indices, obj_labels, obj_min)
 #%%
 # Plot hypervolume
 # define detailed_run parameters
-maxevals = 500
+maxevals = 5000
 frequency = 100
 output = "fishery.data"
 

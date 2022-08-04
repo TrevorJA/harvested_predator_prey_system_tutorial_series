@@ -11,7 +11,7 @@ import itertools
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
-def hrvSTR(Inputs, vars, input_ranges, output_ranges, nIn, nOut, nRBF):
+def harvest_strategy(Inputs, vars, input_ranges, output_ranges, nIn, nOut, nRBF):
     """
     Calculate outputs (u) corresponding to each sample of inputs
 
@@ -151,7 +151,7 @@ def fish_game(vars):
         # Initialize populations and values
         x[0] = prey[i,0] = K
         y[0] = predator[i,0] = 250
-        z[0] = effort[i,0] = hrvSTR([x[0]], vars, [[0, K]], [[0, 1]], nIn, nOut, nRBF)
+        z[0] = effort[i,0] = harvest_strategy([x[0]], vars, [[0, K]], [[0, 1]], nIn, nOut, nRBF)
         NPVharvest = harvest[i,0] = effort[i,0]*x[0]
         # Go through all timesteps for prey, predator, and harvest
         for t in range(tSteps):
@@ -162,7 +162,7 @@ def fish_game(vars):
                     if strategy == 'Previous_Prey':
                         input_ranges = [[0, K]] # Prey pop. range to use for normalization
                         output_ranges = [[0, 1]] # Range to de-normalize harvest to
-                        z[t+1] = hrvSTR([x[t]], vars, input_ranges, output_ranges, nIn, nOut, nRBF)
+                        z[t+1] = harvest_strategy([x[t]], vars, input_ranges, output_ranges, nIn, nOut, nRBF)
             prey[i,t+1] = x[t+1]
             predator[i,t+1] = y[t+1]
             effort[i,t+1] = z[t+1]
