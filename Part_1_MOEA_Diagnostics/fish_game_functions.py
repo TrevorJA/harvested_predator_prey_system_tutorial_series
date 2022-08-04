@@ -4,17 +4,25 @@ Created on Tue Jul 19 09:38:41 2022
 
 @author: lbl59
 
-Code adapted from: 
+Code adapted from:
     Fish game: https://github.com/antonia-had/Generalized_fish_game/blob/master/generalized_fish_game.py
-    
-    Runtime diagnostics: Code adapted from Antonia Hadjimichael's original code 
+
+    Runtime diagnostics: Code adapted from Antonia Hadjimichael's original code
     Author: Antonia Hadjimichael (hadjimichael@psu.edu)
 
-    Original code found in serial-borg-moea/Python/dtlz2_advanced.py 
+    Original code found in serial-borg-moea/Python/dtlz2_advanced.py
     Authors: Andrew Dircks & Dave Hadka
 """
 
+<<<<<<< HEAD
 import numpy as np 
+||||||| 019d6f9
+import numpy as np 
+import numpy as np
+=======
+import numpy as np
+import numpy as np
+>>>>>>> 0533c5ab6fc51bcb6218a0e66c5c7fb7ed8981b0
 import itertools
 import matplotlib.pyplot as plt
 import time
@@ -94,116 +102,6 @@ def harvest_strategy(Inputs, vars, input_ranges, output_ranges, nIn, nOut, nRBF)
         norm_u[k] = output_ranges[k][0] + u[k]*(output_ranges[k][1]-output_ranges[k][0])
     return norm_u
 
-def fish_game_3_objs(vars):
-    """
-    Defines the 3-objective fish game problem to be solved 
-    Optimizes the first three objectives of the full game
-
-    Parameters
-    ----------
-    vars : list of floats
-        Contains the C, R, W values
-
-    Returns objs, cnstr
-
-    """
-
-    # Get chosen strategy
-    strategy = 'Previous_Prey'
-    
-    # Define variables for RBFs
-    nIn = 1 # no. of inputs (depending on selected strategy)
-    nOut = 1 # no. of outputs (depending on selected strategy)
-    nRBF = 2 # no. of RBFs to use
-
-    nObjs = 3
-    nCnstr = 1 # no. of constraints in output
-
-    tSteps = 100 # no. of timesteps to run the fish game on
-    N = 100 # Number of realizations of environmental stochasticity
-    
-    # Get system behavior parameters (need to convert from string to float)
-    a = 0.005
-    b = 0.5
-    c = 0.5
-    d = 0.1
-    h = 0.1
-    K = 2000
-    m = 0.7
-    sigmaX = 0.004
-    sigmaY = 0.004
-
-    x = np.zeros(tSteps+1) # Create prey population array
-    y = np.zeros(tSteps+1) # Create predator population array
-    z = np.zeros(tSteps+1) # Create harvest array
-
-    # Create array to store harvest for all realizations
-    harvest = np.zeros([N,tSteps+1])
-    # Create array to store effort for all realizations
-    effort = np.zeros([N,tSteps+1])
-    # Create array to store prey for all realizations
-    prey = np.zeros([N,tSteps+1])
-    # Create array to store predator for all realizations
-    predator = np.zeros([N,tSteps+1])
-
-    # Create array to store metrics per realization
-    NPV = np.zeros(N)
-    cons_low_harv = np.zeros(N)
-    harv_1st_pc = np.zeros(N)
-    variance = np.zeros(N)
-
-    # Create arrays to store objectives and constraints
-    objs = [0.0]*nObjs   
-    cnstr = [0.0]*nCnstr
-
-    # Create array with environmental stochasticity for prey
-    epsilon_prey = np.random.normal(0.0, sigmaX, N)
-
-    # Create array with environmental stochasticity for predator
-    epsilon_predator = np.random.normal(0.0, sigmaY, N)
-
-    # Go through N possible realizations
-    for i in range(N):
-        # Initialize populations and values
-        x[0] = prey[i,0] = K
-        y[0] = predator[i,0] = 250
-        z[0] = effort[i,0] = hrvSTR([x[0]], vars, [[0, K]], [[0, 1]], nIn, nOut, nRBF)
-        NPVharvest = harvest[i,0] = effort[i,0]*x[0]
-        # Go through all timesteps for prey, predator, and harvest
-        for t in range(tSteps):
-            if x[t] > 0 and y[t] > 0:
-                x[t+1] = (x[t] + b*x[t]*(1-x[t]/K) - (a*x[t]*y[t])/(np.power(y[t],m)+a*h*x[t]) - z[t]*x[t])* np.exp(epsilon_prey[i]) # Prey growth equation
-                y[t+1] = (y[t] + c*a*x[t]*y[t]/(np.power(y[t],m)+a*h*x[t]) - d*y[t]) *np.exp(epsilon_predator[i]) # Predator growth equation
-                if t <= tSteps-1:
-                    if strategy == 'Previous_Prey':
-                        input_ranges = [[0, K]] # Prey pop. range to use for normalization
-                        output_ranges = [[0, 1]] # Range to de-normalize harvest to
-                        z[t+1] = hrvSTR([x[t]], vars, input_ranges, output_ranges, nIn, nOut, nRBF)
-            prey[i,t+1] = x[t+1]
-            predator[i,t+1] = y[t+1]
-            effort[i,t+1] = z[t+1]
-            harvest[i,t+1] = z[t+1]*x[t+1]
-            NPVharvest = NPVharvest + harvest[i,t+1]*(1+0.05)**(-(t+1))
-        NPV[i] = NPVharvest
-        low_hrv = [harvest[i,j]<prey[i,j]/20 for j in range(len(harvest[i,:]))] # Returns a list of True values when there's harvest below 5%
-        count = [ sum( 1 for _ in group ) for key, group in itertools.groupby( low_hrv ) if key ] # Counts groups of True values in a row
-        if count: # Checks if theres at least one count (if not, np.max won't work on empty list)
-            cons_low_harv[i] = np.max(count)  # Finds the largest number of consecutive low harvests
-        else:
-            cons_low_harv[i] = 0
-        harv_1st_pc[i] = np.percentile(harvest[i,:],1)
-        variance[i] = np.var(harvest[i,:])
-
-    # Calculate objectives across N realizations
-    objs[0] = -np.mean(NPV) # Mean NPV for all realizations
-    objs[1] = np.mean((K-prey)/K) # Mean prey deficit
-    objs[2] = np.mean(cons_low_harv) # Mean worst case of consecutive low harvest across realizations
-
-    cnstr[0] = np.mean((predator < 1).sum(axis=1)) # Mean number of predator extinction days per realization
-    
-    # output should be all the objectives 
-    #return objs[0],objs[1],objs[2],objs[3],objs[4]
-    return objs, cnstr
 
 def fish_game_5_objs(vars):
     """
@@ -317,6 +215,11 @@ def fish_game_5_objs(vars):
     #return objs[0],objs[1],objs[2],objs[3],objs[4]
     return objs, cnstr
 
+def fish_game_3_objs(vars):
+    objs, cnstr = fish_game_5_objs(vars)
+    return objs[0:3], cnstr
+
+
 def plot_3d_tradeoff(algorithm, ax, obj_indices, obj_labels, obj_min):
     """
     Plots the 3D tradeoff space for three selected objectives.
@@ -359,6 +262,8 @@ def plot_3d_tradeoff(algorithm, ax, obj_indices, obj_labels, obj_min):
 
     ax.scatter(obj_min[0], obj_min[1], obj_min[2], marker="*", c='orange', s=50)
     plt.show()
+    return
+
 
 def plot_runtime(nfe, metric, runtime_title, metric_label):
     """
@@ -385,7 +290,15 @@ def plot_runtime(nfe, metric, runtime_title, metric_label):
     plt.xlabel('Number of Function Evaluations')
     plt.ylabel(metric_label)
     plt.show()
+<<<<<<< HEAD
     
+||||||| 019d6f9
+<<<<<<< HEAD:Part_1_MOEA_Diagnostics/fish_game_functions.py
+    
+=======
+    return
+
+>>>>>>> 0533c5ab6fc51bcb6218a0e66c5c7fb7ed8981b0
 def runtime_hvol(algorithm, maxevals, frequency, file, hv):
     """
     Output runtime data for an algorithm run into a format readable by
@@ -425,7 +338,7 @@ def runtime_hvol(algorithm, maxevals, frequency, file, hv):
 
     nvars = algorithm.problem.nvars
     nobjs = algorithm.problem.nobjs
-    
+
     nfe = []
     hyp = []
     #front = []
@@ -435,14 +348,14 @@ def runtime_hvol(algorithm, maxevals, frequency, file, hv):
         # step the algorithm
         algorithm.step()
         #algorithm.run(algorithm.nfe + frequency)
-        
+
         # print to file if necessary
         if (algorithm.nfe >= last_log + frequency):
             last_log = algorithm.nfe
             f.write("#\n//ElapsedTime=" +
                     str(datetime.timedelta(seconds=time.time()-start_time)))
             f.write("\n//NFE=" + str(algorithm.nfe) + "\n")
-        
+
             arch = algorithm.archive[:]
             for i in range(len(arch)):
                 sol = arch[i]
@@ -451,7 +364,7 @@ def runtime_hvol(algorithm, maxevals, frequency, file, hv):
                 for j in range(nobjs):
                     f.write(str(sol.objectives[j]) + " ")
                 f.write("\n")
-            
+
             nfe.append(last_log)
             # use Platypus hypervolume indicator on the current archive
             result = hv.calculate(algorithm.archive[:])
@@ -498,7 +411,7 @@ def select_objective(obj_name):
     elif obj_name == 'Mean harvest variance':
         obj_num = 4
         obj_min = 0
-    
+
     return obj_num, obj_min
 
 
