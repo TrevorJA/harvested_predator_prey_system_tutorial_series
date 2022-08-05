@@ -14,15 +14,7 @@ Code adapted from:
     Authors: Andrew Dircks & Dave Hadka
 """
 
-<<<<<<< HEAD
 import numpy as np 
-||||||| 019d6f9
-import numpy as np 
-import numpy as np
-=======
-import numpy as np
-import numpy as np
->>>>>>> 0533c5ab6fc51bcb6218a0e66c5c7fb7ed8981b0
 import itertools
 import matplotlib.pyplot as plt
 import time
@@ -289,16 +281,10 @@ def plot_runtime(nfe, metric, runtime_title, metric_label):
     plt.title(runtime_title)
     plt.xlabel('Number of Function Evaluations')
     plt.ylabel(metric_label)
-    plt.show()
-<<<<<<< HEAD
-    
-||||||| 019d6f9
-<<<<<<< HEAD:Part_1_MOEA_Diagnostics/fish_game_functions.py
-    
-=======
+    plt.show() 
+   
     return
 
->>>>>>> 0533c5ab6fc51bcb6218a0e66c5c7fb7ed8981b0
 def runtime_hvol(algorithm, maxevals, frequency, file, hv):
     """
     Output runtime data for an algorithm run into a format readable by
