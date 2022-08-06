@@ -211,8 +211,58 @@ def fish_game_3_objs(vars):
     objs, cnstr = fish_game_5_objs(vars)
     return objs[0:3], cnstr
 
+def fisheries_game_problem_setup(nVars, nObjs, nCnstr, pop_size=100):
+    """
+    Sets up and runs the fisheries game for a given population size
+    
+    Parameters
+    ----------
+    nVars : int
+        Number of decision variables.
+    nObjs : int
+        Number of performance objectives.
+    nCnstr : int
+        Number of constraints.
+    pop_size : int, optional
+        Initial population size of the randomly-generated set of solutions. 
+        The default is 100.
 
-def plot_3d_tradeoff(algorithm, ax, obj_indices, obj_labels, obj_min):
+    Returns
+    -------
+    algorithm : pyBorg object
+        The algorthm to optimize with a unique initial population size.
+
+    """
+    # Set up the problem
+    problem = Problem(nVars, nObjs, nCnstr)     
+    nVars = 6   # Define number of decision variables
+    nObjs = 5   # Define number of objective -- USER DEFINED
+    nCnstr = 1      # Define number of decision constraints
+    
+    problem = Problem(nVars, nObjs, nCnstr)
+    
+    # set bounds for each decision variable
+    problem.types[0] = Real(0.0, 1.0)
+    problem.types[1] = Real(0.0, 1.0)
+    problem.types[2] = Real(0.0, 1.0)
+    problem.types[3] = Real(0.0, 1.0)
+    problem.types[4] = Real(0.0, 1.0)
+    problem.types[5] = Real(0.0, 1.0)
+    
+    # all values should be nonzero
+    problem.constraints[:] = "==0"
+    
+    # set problem function
+    if nObjs == 5:
+        problem.function = fish_game_5_objs
+    else:
+        problem.function = fish_game_3_objs
+    
+    algorithm = BorgMOEA(problem, epsilons=0.001, population_size=pop_size)
+    return algorithm
+
+
+def plot_3d_tradeoff(algorithm, ax, nObjs, obj1, obj2, obj3):
     """
     Plots the 3D tradeoff space for three selected objectives.
 
@@ -236,23 +286,41 @@ def plot_3d_tradeoff(algorithm, ax, obj_indices, obj_labels, obj_min):
     None.
 
     """
-    obj1_idx = obj_indices[0]
-    obj2_idx = obj_indices[1]
-    obj3_idx = obj_indices[2]
+    objs_indices = []
+    objs_labels = []
+    objs_min = []
+    
+    if nObjs == 5:
+        objs_indices = [select_objective(obj1)[0], 
+                        select_objective(obj2)[0], 
+                        select_objective(obj3)[0]]
+        objs_labels = [obj1, obj2, obj3]
+        objs_min = [select_objective(obj1)[1], 
+                   select_objective(obj2)[1], 
+                   select_objective(obj2)[1]]
+    else:
+        objs_indices = [0,1,2]
+        objs_labels = ['Mean NPV', 'Mean prey deficit', 'Mean WCLH']
+        objs_min = [-6000, 0, 0]
+    
+    obj1_idx = objs_indices[0]
+    obj2_idx = objs_indices[1]
+    obj3_idx = objs_indices[2]
 
-    obj1_lab = obj_labels[0]
-    obj2_lab = obj_labels[1]
-    obj3_lab = obj_labels[2]
+    obj1_lab = objs_labels[0]
+    obj2_lab = objs_labels[1]
+    obj3_lab = objs_labels[2]
 
     ax.scatter([s.objectives[obj1_idx] for s in algorithm.result],
                [s.objectives[obj2_idx] for s in algorithm.result],
-               [s.objectives[obj3_idx] for s in algorithm.result])
+               [s.objectives[obj3_idx] for s in algorithm.result],
+               c='blue', s=100)
 
     ax.set_xlabel(obj1_lab)
     ax.set_ylabel(obj2_lab)
     ax.set_zlabel(obj3_lab)
 
-    ax.scatter(obj_min[0], obj_min[1], obj_min[2], marker="*", c='orange', s=50)
+    ax.scatter(objs_min[0], objs_min[1], objs_min[2], marker="*", c='orange', s=200)
     plt.show()
     return
 
@@ -401,55 +469,6 @@ def select_objective(obj_name):
     return obj_num, obj_min
 
 
-def fisheries_game_problem_setup(nVars, nObjs, nCnstr, pop_size=100):
-    """
-    Sets up and runs the fisheries game for a given population size
-    
-    Parameters
-    ----------
-    nVars : int
-        Number of decision variables.
-    nObjs : int
-        Number of performance objectives.
-    nCnstr : int
-        Number of constraints.
-    pop_size : int, optional
-        Initial population size of the randomly-generated set of solutions. 
-        The default is 100.
-
-    Returns
-    -------
-    algorithm : pyBorg object
-        The algorthm to optimize with a unique initial population size.
-
-    """
-    # Set up the problem
-    problem = Problem(nVars, nObjs, nCnstr)     
-    nVars = 6   # Define number of decision variables
-    nObjs = 5   # Define number of objective -- USER DEFINED
-    nCnstr = 1      # Define number of decision constraints
-    
-    problem = Problem(nVars, nObjs, nCnstr)
-    
-    # set bounds for each decision variable
-    problem.types[0] = Real(0.0, 1.0)
-    problem.types[1] = Real(0.0, 1.0)
-    problem.types[2] = Real(0.0, 1.0)
-    problem.types[3] = Real(0.0, 1.0)
-    problem.types[4] = Real(0.0, 1.0)
-    problem.types[5] = Real(0.0, 1.0)
-    
-    # all values should be nonzero
-    problem.constraints[:] = "==0"
-    
-    # set problem function
-    if nObjs == 5:
-        problem.function = fish_game_5_objs
-    else:
-        problem.function = fish_game_3_objs
-    
-    algorithm = BorgMOEA(problem, epsilons=0.001, population_size=pop_size)
-    return algorithm
 
 def plot_hvol(algorithm, maxevals, frequency, min_list, max_list, ax, pop_size=100):
     """
@@ -487,9 +506,9 @@ def plot_hvol(algorithm, maxevals, frequency, min_list, max_list, ax, pop_size=1
     # plot hypervolume
     #plot_runtime(nfe, hyp, 'PyBorg Runtime (Hypervolume)', 'Hypervolume')
     legend_label = "Pop. size=" + str(pop_size)
-    r = random.randint(0,255)
-    g = random.randint(0,255)
-    b = random.randint(0,255)
-    rgb = [r,g,b]
+    r = random.uniform(0,1)
+    g = random.uniform(0,1)
+    b = random.uniform(0,1)
+    rgb = (r,g,b)
 
     ax.plot(nfe, hyp, label=legend_label, color=rgb)
