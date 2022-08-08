@@ -25,7 +25,7 @@ The second post in the series, [accessible here through the WaterProgramming blo
 Radial basis functions are described as being flexible and useful for generating adaptive harvesting policies.
 
 <p align="center">
-    <img src="https://github.com/TrevorJA/harvested_predator_prey_system_tutorial_series/blob/main/Part_1_MOEA_Diagnostics/many_random_RBFs.png" alt = "Demonstration of the flexibility of radial basis functons (RBFs)." width="200"/>
+    <img src="https://github.com/TrevorJA/harvested_predator_prey_system_tutorial_series/blob/main/Part_1_MOEA_Diagnostics/many_random_RBFs.png" alt = "Demonstration of the flexibility of radial basis functons (RBFs)." width="350"/>
 </p>
 
 
