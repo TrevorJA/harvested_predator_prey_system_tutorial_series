@@ -14,7 +14,7 @@ Code adapted from:
     Authors: Andrew Dircks & Dave Hadka
 """
 
-import numpy as np 
+import numpy as np
 import itertools
 import matplotlib.pyplot as plt
 import time
@@ -104,8 +104,9 @@ def fish_game_5_objs(vars):
     vars : list of floats
         Contains the C, R, W values
 
-    Returns objs, cnstr
-
+    Returns
+    -------
+    objs, cnstr
     """
 
     # Get chosen strategy
@@ -122,7 +123,7 @@ def fish_game_5_objs(vars):
     tSteps = 100 # no. of timesteps to run the fish game on
     N = 100 # Number of realizations of environmental stochasticity
 
-    # Get system behavior parameters (need to convert from string to float)
+    # Define assumed system parameters
     a = 0.005
     b = 0.5
     c = 0.5
@@ -164,26 +165,36 @@ def fish_game_5_objs(vars):
 
     # Go through N possible realizations
     for i in range(N):
+
         # Initialize populations and values
         x[0] = prey[i,0] = K
         y[0] = predator[i,0] = 250
         z[0] = effort[i,0] = harvest_strategy([x[0]], vars, [[0, K]], [[0, 1]], nIn, nOut, nRBF)
         NPVharvest = harvest[i,0] = effort[i,0]*x[0]
+
         # Go through all timesteps for prey, predator, and harvest
         for t in range(tSteps):
+
+            # Solve discretized form of ODE at subsequent time step
             if x[t] > 0 and y[t] > 0:
                 x[t+1] = (x[t] + b*x[t]*(1-x[t]/K) - (a*x[t]*y[t])/(np.power(y[t],m)+a*h*x[t]) - z[t]*x[t])* np.exp(epsilon_prey[i]) # Prey growth equation
                 y[t+1] = (y[t] + c*a*x[t]*y[t]/(np.power(y[t],m)+a*h*x[t]) - d*y[t]) *np.exp(epsilon_predator[i]) # Predator growth equation
+
+                # Solve for harvesting effort at next timestep
                 if t <= tSteps-1:
                     if strategy == 'Previous_Prey':
                         input_ranges = [[0, K]] # Prey pop. range to use for normalization
                         output_ranges = [[0, 1]] # Range to de-normalize harvest to
                         z[t+1] = harvest_strategy([x[t]], vars, input_ranges, output_ranges, nIn, nOut, nRBF)
+
+            # Store values in arrays
             prey[i,t+1] = x[t+1]
             predator[i,t+1] = y[t+1]
             effort[i,t+1] = z[t+1]
             harvest[i,t+1] = z[t+1]*x[t+1]
             NPVharvest = NPVharvest + harvest[i,t+1]*(1+0.05)**(-(t+1))
+
+        # Solve for objectives and constraint
         NPV[i] = NPVharvest
         low_hrv = [harvest[i,j]<prey[i,j]/20 for j in range(len(harvest[i,:]))] # Returns a list of True values when there's harvest below 5%
         count = [ sum( 1 for _ in group ) for key, group in itertools.groupby( low_hrv ) if key ] # Counts groups of True values in a row
@@ -194,7 +205,7 @@ def fish_game_5_objs(vars):
         harv_1st_pc[i] = np.percentile(harvest[i,:],1)
         variance[i] = np.var(harvest[i,:])
 
-    # Calculate objectives across N realizations
+    # Average objectives across N realizations
     objs[0] = -np.mean(NPV) # Mean NPV for all realizations
     objs[1] = np.mean((K-prey)/K) # Mean prey deficit
     objs[2] = np.mean(cons_low_harv) # Mean worst case of consecutive low harvest across realizations
@@ -203,8 +214,7 @@ def fish_game_5_objs(vars):
 
     cnstr[0] = np.mean((predator < 1).sum(axis=1)) # Mean number of predator extinction days per realization
 
-    # output should be all the objectives
-    #return objs[0],objs[1],objs[2],objs[3],objs[4]
+    # output should be all the objectives, and constraint
     return objs, cnstr
 
 def fish_game_3_objs(vars):
@@ -214,7 +224,7 @@ def fish_game_3_objs(vars):
 def fisheries_game_problem_setup(nVars, nObjs, nCnstr, pop_size=100):
     """
     Sets up and runs the fisheries game for a given population size
-    
+
     Parameters
     ----------
     nVars : int
@@ -224,7 +234,7 @@ def fisheries_game_problem_setup(nVars, nObjs, nCnstr, pop_size=100):
     nCnstr : int
         Number of constraints.
     pop_size : int, optional
-        Initial population size of the randomly-generated set of solutions. 
+        Initial population size of the randomly-generated set of solutions.
         The default is 100.
 
     Returns
@@ -234,13 +244,13 @@ def fisheries_game_problem_setup(nVars, nObjs, nCnstr, pop_size=100):
 
     """
     # Set up the problem
-    problem = Problem(nVars, nObjs, nCnstr)     
+    problem = Problem(nVars, nObjs, nCnstr)
     nVars = 6   # Define number of decision variables
     nObjs = 5   # Define number of objective -- USER DEFINED
     nCnstr = 1      # Define number of decision constraints
-    
+
     problem = Problem(nVars, nObjs, nCnstr)
-    
+
     # set bounds for each decision variable
     problem.types[0] = Real(0.0, 1.0)
     problem.types[1] = Real(0.0, 1.0)
@@ -248,16 +258,16 @@ def fisheries_game_problem_setup(nVars, nObjs, nCnstr, pop_size=100):
     problem.types[3] = Real(0.0, 1.0)
     problem.types[4] = Real(0.0, 1.0)
     problem.types[5] = Real(0.0, 1.0)
-    
+
     # all values should be nonzero
     problem.constraints[:] = "==0"
-    
+
     # set problem function
     if nObjs == 5:
         problem.function = fish_game_5_objs
     else:
         problem.function = fish_game_3_objs
-    
+
     algorithm = BorgMOEA(problem, epsilons=0.001, population_size=pop_size)
     return algorithm
 
@@ -289,20 +299,20 @@ def plot_3d_tradeoff(algorithm, ax, nObjs, obj1, obj2, obj3):
     objs_indices = []
     objs_labels = []
     objs_min = []
-    
+
     if nObjs == 5:
-        objs_indices = [select_objective(obj1)[0], 
-                        select_objective(obj2)[0], 
+        objs_indices = [select_objective(obj1)[0],
+                        select_objective(obj2)[0],
                         select_objective(obj3)[0]]
         objs_labels = [obj1, obj2, obj3]
-        objs_min = [select_objective(obj1)[1], 
-                   select_objective(obj2)[1], 
+        objs_min = [select_objective(obj1)[1],
+                   select_objective(obj2)[1],
                    select_objective(obj2)[1]]
     else:
         objs_indices = [0,1,2]
         objs_labels = ['Mean NPV', 'Mean prey deficit', 'Mean WCLH']
         objs_min = [-6000, 0, 0]
-    
+
     obj1_idx = objs_indices[0]
     obj2_idx = objs_indices[1]
     obj3_idx = objs_indices[2]
@@ -349,8 +359,8 @@ def plot_runtime(nfe, metric, runtime_title, metric_label):
     plt.title(runtime_title)
     plt.xlabel('Number of Function Evaluations')
     plt.ylabel(metric_label)
-    plt.show() 
-   
+    plt.show()
+
     return
 
 def runtime_hvol(algorithm, maxevals, frequency, file, hv):

@@ -7,3 +7,4 @@ __pycache__
 */*/.ipynb_checkpoints
 ./*/pyborg
 ./*/fishery.data
+/Part_1_MOEA_Diagnostics/fishery_*.data
