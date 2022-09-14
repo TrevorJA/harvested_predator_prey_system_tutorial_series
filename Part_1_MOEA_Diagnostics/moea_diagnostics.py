@@ -7,7 +7,6 @@ Code adapted from https://waterprogramming.wordpress.com/2021/08/13/introduction
 """
 
 # import all required libraries
-import pyborg
 from platypus import (Problem, Real, Hypervolume)
 from pyborg import BorgMOEA
 from fish_game_functions import *

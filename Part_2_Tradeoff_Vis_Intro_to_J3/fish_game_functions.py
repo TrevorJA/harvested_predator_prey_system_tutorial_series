@@ -19,10 +19,9 @@ import itertools
 import matplotlib.pyplot as plt
 import time
 import datetime
-#import pyborg
+import pyborg
 from platypus import (Problem, Real, Hypervolume)
 from pyborg import BorgMOEA
-from fish_game_functionsns import *
 import ipywidgets as widgets
 from ipywidgets import HBox, VBox, Layout, Label
 import random
