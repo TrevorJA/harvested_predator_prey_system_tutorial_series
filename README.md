@@ -20,10 +20,16 @@ Stability conditions are derived, and an interactive Jupyter Notebook widget is 
 
 ### Post 1: Harvest Optimization and MOEA Diagnostics
 
-The second post in the series, [accessible here through the WaterProgramming blog], or interactively through [the Binder environment here], studies the multi-objective optimization of harvesting strategies within the predator-prey system.
+The second post in the series, [accessible here through the WaterProgramming blog](https://waterprogramming.wordpress.com/2022/08/08/fisheries-training-part-1-harvest-optimization-and-moea-diagnostics/), or via the [Jupyter Notebook in the repository](https://github.com/TrevorJA/harvested_predator_prey_system_tutorial_series/blob/main/Part_1_MOEA_Diagnostics/Part%201%20-%20Harvest%20Optimization%20and%20MOEA%20Diagnostics.ipynb), studies the formulation of harvesting strategies via radial basis functions, and the multi-objective optimization of harvesting strategies within the predator-prey system.
+
+Radial basis functions are described as being flexible and useful for generating adaptive harvesting policies.
+
+<p align="center">
+    <img src="https://github.com/TrevorJA/harvested_predator_prey_system_tutorial_series/blob/main/Part_1_MOEA_Diagnostics/many_random_RBFs.png" alt = "Demonstration of the flexibility of radial basis functons (RBFs)." width="350"/>
+</p>
+
 
 Multiple harvesting objectives are defined, including:
-
 1. Discounted profits
 2. Prey population deficit
 3. Longest duration of consecutive law
@@ -34,9 +40,4 @@ Additionally, a constraint is included which _avoids collapse of predator popula
 
 The [Borg Multi-objective evolutionary algorithm](http://borgmoea.org/) (MOEA) is used to optimize a state-aware adaptive harvesting policy, which prescribes harvesting efforts dependent upon the current prey population levels. The Borg MOEA is employed through a python-wrapper (pyBorg).
 
-
-
-## Content
-
-
-## References
+Basic MOEA diagnostics are performed including an analysis of hypervolume growth with respect to the number of function evaluations, and a random seed analysis which shows the insensitivity of the PyBorg MOEA to initial algorithm parameterizations.
