@@ -2,3 +2,4 @@ numpy
 six
 scipy
 platypus-opt
+pandas
